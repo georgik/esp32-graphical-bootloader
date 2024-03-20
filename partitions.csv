@@ -1,0 +1,11 @@
+# Name,      Type, Subtype,   Offset,  Size, Flags
+nvs,         data, nvs,       0x9000,   24K,
+otadata,     data, ota,       ,         8K,
+phy_init,    data, phy,       ,         4K,
+factory,     app,  factory,   ,         2M,
+ota_0,       app,  ota_0,     ,         2816K,
+ota_1,       app,  ota_1,     ,         2816K,
+ota_2,       app,  ota_2,     ,         2816K,
+ota_3,       app,  ota_3,     ,         2816K,
+ota_4,       app,  ota_4,     ,         2816K,
+

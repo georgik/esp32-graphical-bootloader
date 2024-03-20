@@ -1,6 +1,5 @@
-description: BSP Display example
+description: ESP32 Graphical Bootloader
 
 dependencies:
   m5stack_core_s3:
     version: "^1.0.0"
-    override_path: "../../../bsp/m5stack_core_s3"
