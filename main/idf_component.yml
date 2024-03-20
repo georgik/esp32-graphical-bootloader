@@ -1,5 +1,7 @@
 description: ESP32 Graphical Bootloader
 
 dependencies:
-  m5stack_core_s3:
-    version: "^1.0.0"
+  #m5stack_core_s3:
+  #  version: "^1.0.0"
+  esp-box-3:
+    version: "^1.1.3"

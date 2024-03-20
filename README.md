@@ -2,6 +2,10 @@
 
 3rd stage graphical bootloader which let's you pick an applications whic are stored in OTA partitions.
 
+The default configuration for ESP32-S3-BOX-3.
+
+For M5Stack-CoreS3 - uncomment BSP in `idf_component.yml`
+
 
 ## Build
 
