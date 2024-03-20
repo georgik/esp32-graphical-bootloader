@@ -41,3 +41,26 @@ Change offset for other apps:
 - ota_2 - 0x7A0000
 - ota_3 - 0xA60000
 - ota_4 - 0xD20000
+
+## Updating apps to fallback to bootloader
+
+The bootloader is using OTA mechanism. It's necessary to add following code to the application
+in order to reboot to bootloader:
+
+```
+// Get the partition structure for the factory partition
+const esp_partition_t *factory_partition = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_APP_FACTORY, NULL);
+if (factory_partition != NULL) {
+    if (esp_ota_set_boot_partition(factory_partition) == ESP_OK) {
+        printf("Set boot partition to factory, restarting now.\n");
+    } else {
+        printf("Failed to set boot partition to factory.\n");
+    }
+} else {
+    printf("Factory partition not found.\n");
+}
+
+fflush(stdout);
+printf("Restarting now.\n");
+esp_restart();
+```
