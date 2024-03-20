@@ -1,0 +1,6 @@
+description: BSP Display example
+
+dependencies:
+  m5stack_core_s3:
+    version: "^1.0.0"
+    override_path: "../../../bsp/m5stack_core_s3"
