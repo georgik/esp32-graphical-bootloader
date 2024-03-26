@@ -469,7 +469,7 @@ void bootloader_ui(lv_obj_t *scr) {
 
     // Create status bar
     g_status_bar = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(g_status_bar, lv_obj_get_width(lv_obj_get_parent(g_status_bar)), 36);
+    lv_obj_set_size(g_status_bar, lv_obj_get_width(lv_obj_get_parent(g_status_bar)), 0);
     lv_obj_clear_flag(g_status_bar, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_style_radius(g_status_bar, 0, LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(g_status_bar, lv_obj_get_style_bg_color(lv_scr_act(), LV_STATE_DEFAULT), LV_PART_MAIN);
