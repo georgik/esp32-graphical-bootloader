@@ -30,7 +30,12 @@ Build application (e.g. hello_world):
 idf.py build
 ```
 
-Flash applications to ota_0:
+Flash applications to ota_0 using [espflash](https://github.com/esp-rs/espflash/blob/main/espflash/README.md#installation):
+```
+espflash write-bin 0xD20000 .\build\app.bin
+```
+
+Alternatively using `esptool.py`:
 ```
 esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0xD20000 build/hello_world.bin
 ```
