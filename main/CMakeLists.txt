@@ -1,2 +1,7 @@
-idf_component_register(SRCS "graphical_bootloader_main.c" "bootloader_ui.c"
-                    INCLUDE_DIRS ".")
+idf_component_register(SRCS
+    "bootloader_ui.c"
+    "graphical_bootloader_main.c"
+    "image/icon_about_us.c"
+
+    INCLUDE_DIRS
+        ".")
