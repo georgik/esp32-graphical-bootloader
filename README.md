@@ -50,7 +50,19 @@ Change offset for other apps:
 ## Updating apps to fallback to bootloader
 
 The bootloader is using OTA mechanism. It's necessary to add following code to the application
-in order to reboot to bootloader:
+in order to reboot to bootloader.
+
+Put the following code to main, before starting the rest of the application:
+```
+#include "esp_ota_ops.h"
+
+const esp_partition_t* factory_partition = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_APP_FACTORY, NULL);
+if (factory_partition != NULL) {
+    esp_ota_set_boot_partition(factory_partition);
+}
+```
+
+Here's more elaborate version which can be put somwhere into application, like reaction on back button:
 
 ```
 // Get the partition structure for the factory partition
