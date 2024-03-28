@@ -81,3 +81,12 @@ fflush(stdout);
 printf("Restarting now.\n");
 esp_restart();
 ```
+
+If the project is using explicit list of components, you need to add `app_update` into `main/CMakeLists.txt`, so it looks like this:
+```
+idf_component_register(
+    SRCS "main.cpp"
+    INCLUDE_DIRS "."
+    REQUIRES esp-box-3 app_update
+)
+```
