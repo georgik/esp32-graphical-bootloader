@@ -15,6 +15,9 @@ pushd apps/tic_tac_toe
 idf.py build
 esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0x220000 build/tic_tac_toe.bin
 popd
+pushd apps/wifi_list
+esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0x4E0000 build/wifi_list.bin
+popd
 ```
 
 ## Build
