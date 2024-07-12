@@ -5,6 +5,7 @@
 #include "esp_ota_ops.h"
 #include "esp_system.h"
 #include "bsp/esp-bsp.h"
+#include "esp_timer.h"
 
 typedef struct {
     lv_obj_t *scr;
@@ -33,13 +34,14 @@ static int g_item_index = 0;
 static lv_group_t *g_btn_op_group = NULL;
 static button_style_t g_btn_styles;
 static lv_obj_t *g_page_menu = NULL;
+static int64_t last_btn_press_time = 0;
 
 static lv_obj_t *g_focus_last_obj = NULL;
 static lv_obj_t *g_group_list[3] = {0};
 
-LV_IMG_DECLARE(icon_about_us)
-// LV_IMG_DECLARE(icon_app2)
-// LV_IMG_DECLARE(icon_app3)
+LV_IMG_DECLARE(icon_tic_tac_toe)
+LV_IMG_DECLARE(icon_wifi_list)
+LV_IMG_DECLARE(icon_calculator)
 // LV_IMG_DECLARE(icon_app4)
 // LV_IMG_DECLARE(icon_app5)
 
@@ -50,11 +52,11 @@ void ui_app4_start(void (*fn)(void));
 void ui_app5_start(void (*fn)(void));
 
 static item_desc_t item[] = {
-    { "App1", (void *) &icon_about_us, ui_app1_start, NULL},
-    { "App2", (void *) &icon_about_us, ui_app2_start, NULL},
-    { "App3", (void *) &icon_about_us, ui_app3_start, NULL},
-    { "App4", (void *) &icon_about_us, ui_app4_start, NULL},
-    { "App5", (void *) &icon_about_us, ui_app5_start, NULL},
+    { "Tic-Tac-Toe", (void *) &icon_tic_tac_toe, ui_app1_start, NULL},
+    { "Wi-Fi List", (void *) &icon_wifi_list, ui_app2_start, NULL},
+    { "Calculator", (void *) &icon_calculator, ui_app3_start, NULL},
+    { "App4", (void *) &icon_tic_tac_toe, ui_app4_start, NULL},
+    { "App5", (void *) &icon_tic_tac_toe, ui_app5_start, NULL},
 };
 
 static lv_obj_t *g_img_btn, *g_img_item = NULL;
@@ -96,17 +98,6 @@ lv_group_t *ui_get_btn_op_group(void)
     return g_btn_op_group;
 }
 
-
-static void clock_run_cb(lv_timer_t *timer)
-{
-    lv_obj_t *lab_time = (lv_obj_t *) timer->user_data;
-    time_t now;
-    struct tm timeinfo;
-    time(&now);
-    localtime_r(&now, &timeinfo);
-    lv_label_set_text_fmt(lab_time, "%02u:%02u", timeinfo.tm_hour, timeinfo.tm_min);
-}
-
 static void ui_button_style_init(void)
 {
     /*Init the style for the default state*/
@@ -115,10 +106,7 @@ static void ui_button_style_init(void)
 
     lv_style_set_radius(&g_btn_styles.style, 5);
 
-    // lv_style_set_bg_opa(&g_btn_styles.style, LV_OPA_100);
     lv_style_set_bg_color(&g_btn_styles.style, lv_color_make(255, 255, 255));
-    // lv_style_set_bg_grad_color(&g_btn_styles.style, lv_color_make(255, 255, 255));
-    // lv_style_set_bg_grad_dir(&g_btn_styles.style, LV_GRAD_DIR_VER);
 
     lv_style_set_border_opa(&g_btn_styles.style, LV_OPA_30);
     lv_style_set_border_width(&g_btn_styles.style, 2);
@@ -128,16 +116,6 @@ static void ui_button_style_init(void)
     lv_style_set_shadow_color(&g_btn_styles.style, lv_color_make(0, 0, 0));
     lv_style_set_shadow_ofs_x(&g_btn_styles.style, 0);
     lv_style_set_shadow_ofs_y(&g_btn_styles.style, 0);
-
-    // lv_style_set_pad_all(&g_btn_styles.style, 10);
-
-    // lv_style_set_outline_width(&g_btn_styles.style, 1);
-    // lv_style_set_outline_opa(&g_btn_styles.style, LV_OPA_COVER);
-    // lv_style_set_outline_color(&g_btn_styles.style, lv_palette_main(LV_PALETTE_RED));
-
-
-    // lv_style_set_text_color(&g_btn_styles.style, lv_color_white());
-    // lv_style_set_pad_all(&g_btn_styles.style, 10);
 
     /*Init the pressed style*/
 
@@ -153,20 +131,6 @@ static void ui_button_style_init(void)
 
     lv_style_init(&g_btn_styles.style_focus_no_outline);
     lv_style_set_outline_width(&g_btn_styles.style_focus_no_outline, 0);
-
-}
-
-
-static void ui_status_bar_set_visible(bool visible)
-{
-    // if (visible) {
-    //     // update all state
-    //     ui_main_status_bar_set_wifi(app_wifi_is_connected());
-    //     ui_main_status_bar_set_cloud(app_rmaker_is_connected());
-    //     lv_obj_clear_flag(g_status_bar, LV_OBJ_FLAG_HIDDEN);
-    // } else {
-    //     lv_obj_add_flag(g_status_bar, LV_OBJ_FLAG_HIDDEN);
-    // }
 }
 
 static int8_t menu_direct_probe(lv_obj_t *focus_obj)
@@ -203,9 +167,17 @@ static int8_t menu_direct_probe(lv_obj_t *focus_obj)
 
 static void menu_prev_cb(lv_event_t *e)
 {
+    bsp_display_lock(0);
     lv_event_code_t code = lv_event_get_code(e);
 
     if (LV_EVENT_RELEASED == code) {
+        int64_t now = esp_timer_get_time();
+        if (now - last_btn_press_time < 500000) { // 500 ms debounce time
+            bsp_display_unlock();
+            return;
+        }
+        last_btn_press_time = now;
+
         lv_led_off(g_led_item[g_item_index]);
         if (0 == g_item_index) {
             g_item_index = g_item_size;
@@ -215,13 +187,22 @@ static void menu_prev_cb(lv_event_t *e)
         lv_img_set_src(g_img_item, item[g_item_index].img_src);
         lv_label_set_text_static(g_lab_item, item[g_item_index].name);
     }
+    bsp_display_unlock();
 }
 
 static void menu_next_cb(lv_event_t *e)
 {
+    bsp_display_lock(0);
     lv_event_code_t code = lv_event_get_code(e);
 
     if (LV_EVENT_RELEASED == code) {
+        int64_t now = esp_timer_get_time();
+        if (now - last_btn_press_time < 500000) { // 500 ms debounce time
+            bsp_display_unlock();
+            return;
+        }
+        last_btn_press_time = now;
+
         lv_led_off(g_led_item[g_item_index]);
         g_item_index++;
         if (g_item_index >= g_item_size) {
@@ -231,11 +212,12 @@ static void menu_next_cb(lv_event_t *e)
         lv_img_set_src(g_img_item, item[g_item_index].img_src);
         lv_label_set_text_static(g_lab_item, item[g_item_index].name);
     }
+    bsp_display_unlock();
 }
-
 
 static void ui_led_set_visible(bool visible)
 {
+    bsp_display_lock(0);
     for (size_t i = 0; i < sizeof(g_led_item) / sizeof(g_led_item[0]); i++) {
         if (NULL != g_led_item[i]) {
             if (visible) {
@@ -245,21 +227,25 @@ static void ui_led_set_visible(bool visible)
             }
         }
     }
+    bsp_display_unlock();
 }
 
 
 void menu_new_item_select(lv_obj_t *obj)
 {
+    bsp_display_lock(0);
     int8_t direct = menu_direct_probe(obj);
     g_item_index = menu_get_num_offset(g_item_index, g_item_size, direct);
 
     lv_led_on(g_led_item[g_item_index]);
     lv_img_set_src(g_img_item, item[g_item_index].img_src);
     lv_label_set_text_static(g_lab_item, item[g_item_index].name);
+    bsp_display_unlock();
 }
 
 static void menu_enter_cb(lv_event_t *e)
 {
+    bsp_display_lock(0);
     lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t *obj = lv_event_get_user_data(e);
 
@@ -279,9 +265,9 @@ static void menu_enter_cb(lv_event_t *e)
         lv_obj_del(menu_btn_parent);
         g_focus_last_obj = NULL;
 
-        ui_status_bar_set_visible(true);
         item[g_item_index].start_fn(item[g_item_index].end_fn);
     }
+    bsp_display_unlock();
 }
 
 static void ui_main_menu(int32_t index_id)
@@ -294,7 +280,6 @@ static void ui_main_menu(int32_t index_id)
         lv_obj_clear_flag(g_page_menu, LV_OBJ_FLAG_SCROLLABLE);
         lv_obj_align_to(g_page_menu, ui_main_get_status_bar(), LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
     }
-    ui_status_bar_set_visible(true);
 
     lv_obj_t *obj = lv_obj_create(g_page_menu);
     lv_obj_set_size(obj, 290, 174);
@@ -306,7 +291,7 @@ static void ui_main_menu(int32_t index_id)
     lv_obj_align(obj, LV_ALIGN_TOP_MID, 0, -10);
 
     g_img_btn = lv_btn_create(obj);
-    lv_obj_set_size(g_img_btn, 80, 80);
+    lv_obj_set_size(g_img_btn, 108, 108);
     lv_obj_add_style(g_img_btn, &ui_button_styles()->style_pr, LV_STATE_PRESSED);
     lv_obj_add_style(g_img_btn, &ui_button_styles()->style_focus_no_outline, LV_STATE_FOCUS_KEY);
     lv_obj_add_style(g_img_btn, &ui_button_styles()->style_focus_no_outline, LV_STATE_FOCUSED);
@@ -438,19 +423,9 @@ void ui_app5_start(void (*fn)(void))
     ota_swich_to_app(4);
 }
 
-void ui_acquire(void)
-{
-    bsp_display_lock(0);
-}
-
-void ui_release(void)
-{
-    bsp_display_unlock();
-}
-
 void bootloader_ui(lv_obj_t *scr) {
 
-    ui_acquire();
+    bsp_display_lock(0);
     lv_obj_set_style_bg_color(lv_scr_act(), lv_color_make(237, 238, 239), LV_STATE_DEFAULT);
     ui_button_style_init();
 
@@ -477,23 +452,7 @@ void bootloader_ui(lv_obj_t *scr) {
     lv_obj_set_style_shadow_width(g_status_bar, 0, LV_PART_MAIN);
     lv_obj_align(g_status_bar, LV_ALIGN_TOP_MID, 0, 0);
 
-    // lv_obj_t *lab_time = lv_label_create(g_status_bar);
-    // lv_label_set_text_static(lab_time, "23:59");
-    // lv_obj_align(lab_time, LV_ALIGN_LEFT_MID, 0, 0);
-    // lv_timer_t *timer = lv_timer_create(clock_run_cb, 1000, (void *) lab_time);
-    // clock_run_cb(timer);
-
-    // g_lab_wifi = lv_label_create(g_status_bar);
-    // lv_obj_align_to(g_lab_wifi, lab_time, LV_ALIGN_OUT_RIGHT_MID, 10, 0);
-
-    // g_lab_cloud = lv_label_create(g_status_bar);
-    // lv_obj_set_style_text_font(g_lab_cloud, &font_icon_16, LV_PART_MAIN);
-    // lv_obj_align_to(g_lab_cloud, g_lab_wifi, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
-
-    ui_status_bar_set_visible(0);
-
     ui_main_menu(g_item_index);
 
-    ui_release();
-    // return ESP_OK;
+    bsp_display_unlock();
 }
