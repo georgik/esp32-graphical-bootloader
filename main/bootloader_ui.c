@@ -96,17 +96,6 @@ lv_group_t *ui_get_btn_op_group(void)
     return g_btn_op_group;
 }
 
-
-static void clock_run_cb(lv_timer_t *timer)
-{
-    lv_obj_t *lab_time = (lv_obj_t *) timer->user_data;
-    time_t now;
-    struct tm timeinfo;
-    time(&now);
-    localtime_r(&now, &timeinfo);
-    lv_label_set_text_fmt(lab_time, "%02u:%02u", timeinfo.tm_hour, timeinfo.tm_min);
-}
-
 static void ui_button_style_init(void)
 {
     /*Init the style for the default state*/
@@ -288,7 +277,7 @@ static void ui_main_menu(int32_t index_id)
     lv_obj_align(obj, LV_ALIGN_TOP_MID, 0, -10);
 
     g_img_btn = lv_btn_create(obj);
-    lv_obj_set_size(g_img_btn, 80, 80);
+    lv_obj_set_size(g_img_btn, 108, 108);
     lv_obj_add_style(g_img_btn, &ui_button_styles()->style_pr, LV_STATE_PRESSED);
     lv_obj_add_style(g_img_btn, &ui_button_styles()->style_focus_no_outline, LV_STATE_FOCUS_KEY);
     lv_obj_add_style(g_img_btn, &ui_button_styles()->style_focus_no_outline, LV_STATE_FOCUSED);
