@@ -5,6 +5,7 @@
 #include "esp_ota_ops.h"
 #include "esp_system.h"
 #include "bsp/esp-bsp.h"
+#include "esp_timer.h"
 
 typedef struct {
     lv_obj_t *scr;
@@ -33,13 +34,14 @@ static int g_item_index = 0;
 static lv_group_t *g_btn_op_group = NULL;
 static button_style_t g_btn_styles;
 static lv_obj_t *g_page_menu = NULL;
+static int64_t last_btn_press_time = 0;
 
 static lv_obj_t *g_focus_last_obj = NULL;
 static lv_obj_t *g_group_list[3] = {0};
 
 LV_IMG_DECLARE(icon_tic_tac_toe)
 LV_IMG_DECLARE(icon_wifi_list)
-// LV_IMG_DECLARE(icon_app3)
+LV_IMG_DECLARE(icon_calculator)
 // LV_IMG_DECLARE(icon_app4)
 // LV_IMG_DECLARE(icon_app5)
 
@@ -52,7 +54,7 @@ void ui_app5_start(void (*fn)(void));
 static item_desc_t item[] = {
     { "Tic-Tac-Toe", (void *) &icon_tic_tac_toe, ui_app1_start, NULL},
     { "Wi-Fi List", (void *) &icon_wifi_list, ui_app2_start, NULL},
-    { "App3", (void *) &icon_tic_tac_toe, ui_app3_start, NULL},
+    { "Calculator", (void *) &icon_calculator, ui_app3_start, NULL},
     { "App4", (void *) &icon_tic_tac_toe, ui_app4_start, NULL},
     { "App5", (void *) &icon_tic_tac_toe, ui_app5_start, NULL},
 };
@@ -169,6 +171,13 @@ static void menu_prev_cb(lv_event_t *e)
     lv_event_code_t code = lv_event_get_code(e);
 
     if (LV_EVENT_RELEASED == code) {
+        int64_t now = esp_timer_get_time();
+        if (now - last_btn_press_time < 500000) { // 500 ms debounce time
+            bsp_display_unlock();
+            return;
+        }
+        last_btn_press_time = now;
+
         lv_led_off(g_led_item[g_item_index]);
         if (0 == g_item_index) {
             g_item_index = g_item_size;
@@ -187,6 +196,13 @@ static void menu_next_cb(lv_event_t *e)
     lv_event_code_t code = lv_event_get_code(e);
 
     if (LV_EVENT_RELEASED == code) {
+        int64_t now = esp_timer_get_time();
+        if (now - last_btn_press_time < 500000) { // 500 ms debounce time
+            bsp_display_unlock();
+            return;
+        }
+        last_btn_press_time = now;
+
         lv_led_off(g_led_item[g_item_index]);
         g_item_index++;
         if (g_item_index >= g_item_size) {
@@ -198,7 +214,6 @@ static void menu_next_cb(lv_event_t *e)
     }
     bsp_display_unlock();
 }
-
 
 static void ui_led_set_visible(bool visible)
 {

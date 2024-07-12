@@ -18,6 +18,9 @@ popd
 pushd apps/wifi_list
 esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0x4E0000 build/wifi_list.bin
 popd
+pushd apps/calculator
+esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0x7A0000 build/calculator.bin
+popd
 ```
 
 ## Build
