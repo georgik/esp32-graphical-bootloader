@@ -12,10 +12,9 @@
 static lv_obj_t *btn_grid[3][3];
 static char board[3][3];
 static bool player_turn = true; // true for 'X', false for 'O'
-static bool event_in_progress = false; // Flag for event handling
-static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED; // Mutex for critical sections
 
 static void reset_game() {
+    bsp_display_lock(0);
     memset(board, 0, sizeof(board));
     for (int row = 0; row < 3; ++row) {
         for (int col = 0; col < 3; ++col) {
@@ -25,21 +24,26 @@ static void reset_game() {
         }
     }
     player_turn = true;
+    bsp_display_unlock();
 }
 
 static void close_message_box(lv_timer_t *timer) {
     lv_obj_t *msg_box = (lv_obj_t *)lv_timer_get_user_data(timer);
+    bsp_display_lock(0);
     lv_msgbox_close(msg_box);
     lv_timer_delete(timer);
+    bsp_display_unlock();
     reset_game();
 }
 
 static void show_message(const char *text) {
     ESP_LOGI(TAG, "%s", text);
+    bsp_display_lock(0);
     lv_obj_t *msg_box = lv_msgbox_create(NULL);
     lv_msgbox_add_text(msg_box, text);
     lv_obj_center(msg_box);
     lv_timer_create(close_message_box, 2000, msg_box);
+    bsp_display_unlock();
 }
 
 static bool check_winner(char player) {
@@ -60,18 +64,11 @@ static bool check_winner(char player) {
 }
 
 static void event_handler(lv_event_t *e) {
-    taskENTER_CRITICAL(&mux); // Enter critical section
-    if (event_in_progress) {
-        taskEXIT_CRITICAL(&mux); // Exit critical section if an event is already in progress
-        return;
-    }
-    event_in_progress = true;
-    taskEXIT_CRITICAL(&mux); // Exit critical section
-
     lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t *btn = lv_event_get_target(e);
 
     if (code == LV_EVENT_CLICKED) {
+        bsp_display_lock(0);
         uint32_t id = (uint32_t)lv_event_get_user_data(e);
         uint8_t row = id / 3;
         uint8_t col = id % 3;
@@ -88,11 +85,8 @@ static void event_handler(lv_event_t *e) {
                 player_turn = !player_turn;
             }
         }
+        bsp_display_unlock();
     }
-
-    taskENTER_CRITICAL(&mux); // Enter critical section
-    event_in_progress = false; // Mark the event as processed
-    taskEXIT_CRITICAL(&mux); // Exit critical section
 }
 
 void lvgl_task(void *pvParameter) {
