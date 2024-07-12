@@ -38,7 +38,7 @@ static lv_obj_t *g_focus_last_obj = NULL;
 static lv_obj_t *g_group_list[3] = {0};
 
 LV_IMG_DECLARE(icon_tic_tac_toe)
-// LV_IMG_DECLARE(icon_app2)
+LV_IMG_DECLARE(icon_wifi_list)
 // LV_IMG_DECLARE(icon_app3)
 // LV_IMG_DECLARE(icon_app4)
 // LV_IMG_DECLARE(icon_app5)
@@ -51,7 +51,7 @@ void ui_app5_start(void (*fn)(void));
 
 static item_desc_t item[] = {
     { "Tic-Tac-Toe", (void *) &icon_tic_tac_toe, ui_app1_start, NULL},
-    { "App2", (void *) &icon_tic_tac_toe, ui_app2_start, NULL},
+    { "Wi-Fi List", (void *) &icon_wifi_list, ui_app2_start, NULL},
     { "App3", (void *) &icon_tic_tac_toe, ui_app3_start, NULL},
     { "App4", (void *) &icon_tic_tac_toe, ui_app4_start, NULL},
     { "App5", (void *) &icon_tic_tac_toe, ui_app5_start, NULL},
@@ -104,10 +104,7 @@ static void ui_button_style_init(void)
 
     lv_style_set_radius(&g_btn_styles.style, 5);
 
-    // lv_style_set_bg_opa(&g_btn_styles.style, LV_OPA_100);
     lv_style_set_bg_color(&g_btn_styles.style, lv_color_make(255, 255, 255));
-    // lv_style_set_bg_grad_color(&g_btn_styles.style, lv_color_make(255, 255, 255));
-    // lv_style_set_bg_grad_dir(&g_btn_styles.style, LV_GRAD_DIR_VER);
 
     lv_style_set_border_opa(&g_btn_styles.style, LV_OPA_30);
     lv_style_set_border_width(&g_btn_styles.style, 2);
@@ -132,12 +129,6 @@ static void ui_button_style_init(void)
 
     lv_style_init(&g_btn_styles.style_focus_no_outline);
     lv_style_set_outline_width(&g_btn_styles.style_focus_no_outline, 0);
-
-}
-
-
-static void ui_status_bar_set_visible(bool visible)
-{
 }
 
 static int8_t menu_direct_probe(lv_obj_t *focus_obj)
@@ -174,6 +165,7 @@ static int8_t menu_direct_probe(lv_obj_t *focus_obj)
 
 static void menu_prev_cb(lv_event_t *e)
 {
+    bsp_display_lock(0);
     lv_event_code_t code = lv_event_get_code(e);
 
     if (LV_EVENT_RELEASED == code) {
@@ -186,10 +178,12 @@ static void menu_prev_cb(lv_event_t *e)
         lv_img_set_src(g_img_item, item[g_item_index].img_src);
         lv_label_set_text_static(g_lab_item, item[g_item_index].name);
     }
+    bsp_display_unlock();
 }
 
 static void menu_next_cb(lv_event_t *e)
 {
+    bsp_display_lock(0);
     lv_event_code_t code = lv_event_get_code(e);
 
     if (LV_EVENT_RELEASED == code) {
@@ -202,11 +196,13 @@ static void menu_next_cb(lv_event_t *e)
         lv_img_set_src(g_img_item, item[g_item_index].img_src);
         lv_label_set_text_static(g_lab_item, item[g_item_index].name);
     }
+    bsp_display_unlock();
 }
 
 
 static void ui_led_set_visible(bool visible)
 {
+    bsp_display_lock(0);
     for (size_t i = 0; i < sizeof(g_led_item) / sizeof(g_led_item[0]); i++) {
         if (NULL != g_led_item[i]) {
             if (visible) {
@@ -216,21 +212,25 @@ static void ui_led_set_visible(bool visible)
             }
         }
     }
+    bsp_display_unlock();
 }
 
 
 void menu_new_item_select(lv_obj_t *obj)
 {
+    bsp_display_lock(0);
     int8_t direct = menu_direct_probe(obj);
     g_item_index = menu_get_num_offset(g_item_index, g_item_size, direct);
 
     lv_led_on(g_led_item[g_item_index]);
     lv_img_set_src(g_img_item, item[g_item_index].img_src);
     lv_label_set_text_static(g_lab_item, item[g_item_index].name);
+    bsp_display_unlock();
 }
 
 static void menu_enter_cb(lv_event_t *e)
 {
+    bsp_display_lock(0);
     lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t *obj = lv_event_get_user_data(e);
 
@@ -250,9 +250,9 @@ static void menu_enter_cb(lv_event_t *e)
         lv_obj_del(menu_btn_parent);
         g_focus_last_obj = NULL;
 
-        ui_status_bar_set_visible(true);
         item[g_item_index].start_fn(item[g_item_index].end_fn);
     }
+    bsp_display_unlock();
 }
 
 static void ui_main_menu(int32_t index_id)
@@ -265,7 +265,6 @@ static void ui_main_menu(int32_t index_id)
         lv_obj_clear_flag(g_page_menu, LV_OBJ_FLAG_SCROLLABLE);
         lv_obj_align_to(g_page_menu, ui_main_get_status_bar(), LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
     }
-    ui_status_bar_set_visible(true);
 
     lv_obj_t *obj = lv_obj_create(g_page_menu);
     lv_obj_set_size(obj, 290, 174);
@@ -409,19 +408,9 @@ void ui_app5_start(void (*fn)(void))
     ota_swich_to_app(4);
 }
 
-void ui_acquire(void)
-{
-    bsp_display_lock(0);
-}
-
-void ui_release(void)
-{
-    bsp_display_unlock();
-}
-
 void bootloader_ui(lv_obj_t *scr) {
 
-    ui_acquire();
+    bsp_display_lock(0);
     lv_obj_set_style_bg_color(lv_scr_act(), lv_color_make(237, 238, 239), LV_STATE_DEFAULT);
     ui_button_style_init();
 
@@ -448,9 +437,7 @@ void bootloader_ui(lv_obj_t *scr) {
     lv_obj_set_style_shadow_width(g_status_bar, 0, LV_PART_MAIN);
     lv_obj_align(g_status_bar, LV_ALIGN_TOP_MID, 0, 0);
 
-    ui_status_bar_set_visible(0);
-
     ui_main_menu(g_item_index);
 
-    ui_release();
+    bsp_display_unlock();
 }
