@@ -7,17 +7,27 @@ The default configuration for ESP32-S3-BOX-3.
 For M5Stack-CoreS3 - uncomment BSP in `idf_component.yml`
 
 
+## Quick start
+
+```shell
+idf.py build flash
+pushd apps/tic_tac_toe
+idf.py build
+esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0x220000 build/tic_tac_toe.bin
+popd
+```
+
 ## Build
 
 Initial build and flash of the application and partition table.
 
-```
+```shell
 idf.py build flash monitor
 ```
 
 After the initial flash, it's possible to use following command, just to update the factory application:
 
-```
+```shell
 idf.py app-flash monitor
 ```
 
@@ -26,7 +36,7 @@ idf.py app-flash monitor
 Applications are stored in ota_0 - ota_4.
 
 Build application (e.g. hello_world):
-```
+```shell
 idf.py build
 ```
 
@@ -53,7 +63,7 @@ The bootloader is using OTA mechanism. It's necessary to add following code to t
 in order to reboot to bootloader.
 
 Put the following code to main, before starting the rest of the application:
-```
+```c
 #include "esp_ota_ops.h"
 
 const esp_partition_t* factory_partition = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_APP_FACTORY, NULL);
@@ -64,7 +74,9 @@ if (factory_partition != NULL) {
 
 Here's more elaborate version which can be put somwhere into application, like reaction on back button:
 
-```
+```c
+#include "esp_ota_ops.h"
+
 // Get the partition structure for the factory partition
 const esp_partition_t *factory_partition = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_APP_FACTORY, NULL);
 if (factory_partition != NULL) {
@@ -87,6 +99,6 @@ If the project is using explicit list of components, you need to add `app_update
 idf_component_register(
     SRCS "main.cpp"
     INCLUDE_DIRS "."
-    REQUIRES esp-box-3 app_update
+    REQUIRES app_update
 )
 ```

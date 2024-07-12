@@ -5,6 +5,7 @@
 #include "esp_log.h"
 #include "lvgl.h"
 #include "bsp/esp-bsp.h"
+#include "esp_ota_ops.h"
 
 #define TAG "TicTacToe"
 
