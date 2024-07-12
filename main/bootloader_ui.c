@@ -37,7 +37,7 @@ static lv_obj_t *g_page_menu = NULL;
 static lv_obj_t *g_focus_last_obj = NULL;
 static lv_obj_t *g_group_list[3] = {0};
 
-LV_IMG_DECLARE(icon_about_us)
+LV_IMG_DECLARE(icon_tic_tac_toe)
 // LV_IMG_DECLARE(icon_app2)
 // LV_IMG_DECLARE(icon_app3)
 // LV_IMG_DECLARE(icon_app4)
@@ -50,11 +50,11 @@ void ui_app4_start(void (*fn)(void));
 void ui_app5_start(void (*fn)(void));
 
 static item_desc_t item[] = {
-    { "App1", (void *) &icon_about_us, ui_app1_start, NULL},
-    { "App2", (void *) &icon_about_us, ui_app2_start, NULL},
-    { "App3", (void *) &icon_about_us, ui_app3_start, NULL},
-    { "App4", (void *) &icon_about_us, ui_app4_start, NULL},
-    { "App5", (void *) &icon_about_us, ui_app5_start, NULL},
+    { "Tic-Tac-Toe", (void *) &icon_tic_tac_toe, ui_app1_start, NULL},
+    { "App2", (void *) &icon_tic_tac_toe, ui_app2_start, NULL},
+    { "App3", (void *) &icon_tic_tac_toe, ui_app3_start, NULL},
+    { "App4", (void *) &icon_tic_tac_toe, ui_app4_start, NULL},
+    { "App5", (void *) &icon_tic_tac_toe, ui_app5_start, NULL},
 };
 
 static lv_obj_t *g_img_btn, *g_img_item = NULL;
@@ -129,16 +129,6 @@ static void ui_button_style_init(void)
     lv_style_set_shadow_ofs_x(&g_btn_styles.style, 0);
     lv_style_set_shadow_ofs_y(&g_btn_styles.style, 0);
 
-    // lv_style_set_pad_all(&g_btn_styles.style, 10);
-
-    // lv_style_set_outline_width(&g_btn_styles.style, 1);
-    // lv_style_set_outline_opa(&g_btn_styles.style, LV_OPA_COVER);
-    // lv_style_set_outline_color(&g_btn_styles.style, lv_palette_main(LV_PALETTE_RED));
-
-
-    // lv_style_set_text_color(&g_btn_styles.style, lv_color_white());
-    // lv_style_set_pad_all(&g_btn_styles.style, 10);
-
     /*Init the pressed style*/
 
     lv_style_init(&g_btn_styles.style_pr);
@@ -159,14 +149,6 @@ static void ui_button_style_init(void)
 
 static void ui_status_bar_set_visible(bool visible)
 {
-    // if (visible) {
-    //     // update all state
-    //     ui_main_status_bar_set_wifi(app_wifi_is_connected());
-    //     ui_main_status_bar_set_cloud(app_rmaker_is_connected());
-    //     lv_obj_clear_flag(g_status_bar, LV_OBJ_FLAG_HIDDEN);
-    // } else {
-    //     lv_obj_add_flag(g_status_bar, LV_OBJ_FLAG_HIDDEN);
-    // }
 }
 
 static int8_t menu_direct_probe(lv_obj_t *focus_obj)
@@ -477,23 +459,9 @@ void bootloader_ui(lv_obj_t *scr) {
     lv_obj_set_style_shadow_width(g_status_bar, 0, LV_PART_MAIN);
     lv_obj_align(g_status_bar, LV_ALIGN_TOP_MID, 0, 0);
 
-    // lv_obj_t *lab_time = lv_label_create(g_status_bar);
-    // lv_label_set_text_static(lab_time, "23:59");
-    // lv_obj_align(lab_time, LV_ALIGN_LEFT_MID, 0, 0);
-    // lv_timer_t *timer = lv_timer_create(clock_run_cb, 1000, (void *) lab_time);
-    // clock_run_cb(timer);
-
-    // g_lab_wifi = lv_label_create(g_status_bar);
-    // lv_obj_align_to(g_lab_wifi, lab_time, LV_ALIGN_OUT_RIGHT_MID, 10, 0);
-
-    // g_lab_cloud = lv_label_create(g_status_bar);
-    // lv_obj_set_style_text_font(g_lab_cloud, &font_icon_16, LV_PART_MAIN);
-    // lv_obj_align_to(g_lab_cloud, g_lab_wifi, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
-
     ui_status_bar_set_visible(0);
 
     ui_main_menu(g_item_index);
 
     ui_release();
-    // return ESP_OK;
 }

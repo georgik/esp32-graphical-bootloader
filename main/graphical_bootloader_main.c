@@ -25,9 +25,6 @@ void app_main(void)
     bsp_display_backlight_on();
      // Enter the main loop to process LVGL tasks
     while (1) {
-        // Handle LVGL related tasks
-        lv_task_handler();
-        // Delay for a short period of time (e.g., 5 ms)
-        vTaskDelay(pdMS_TO_TICKS(5));
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
