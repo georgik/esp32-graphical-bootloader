@@ -43,7 +43,7 @@ LV_IMG_DECLARE(icon_tic_tac_toe)
 LV_IMG_DECLARE(icon_wifi_list)
 LV_IMG_DECLARE(icon_calculator)
 LV_IMG_DECLARE(icon_synth_piano)
-// LV_IMG_DECLARE(icon_app5)
+LV_IMG_DECLARE(icon_game_of_life)
 
 void ui_app1_start(void (*fn)(void));
 void ui_app2_start(void (*fn)(void));
@@ -56,12 +56,12 @@ static item_desc_t item[] = {
     { "Wi-Fi List", (void *) &icon_wifi_list, ui_app2_start, NULL},
     { "Calculator", (void *) &icon_calculator, ui_app3_start, NULL},
     { "Piano", (void *) &icon_synth_piano, ui_app4_start, NULL},
-    { "App5", (void *) &icon_tic_tac_toe, ui_app5_start, NULL},
+    { "Game of Life", (void *) &icon_game_of_life, ui_app5_start, NULL},
 };
 
 static lv_obj_t *g_img_btn, *g_img_item = NULL;
 static lv_obj_t *g_lab_item = NULL;
-static lv_obj_t *g_led_item[6];
+static lv_obj_t *g_led_item[5];
 static size_t g_item_size = sizeof(item) / sizeof(item[0]);
 static lv_obj_t *g_status_bar = NULL;
 

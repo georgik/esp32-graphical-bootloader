@@ -24,6 +24,9 @@ popd
 pushd apps/synth_piano
 esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0xA60000 build/synth_piano.bin
 popd
+pushd apps/game_of_life
+esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0xA60000 build/game_of_life.bin
+popd
 ```
 
 ## Build
