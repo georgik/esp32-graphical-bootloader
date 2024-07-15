@@ -21,6 +21,9 @@ popd
 pushd apps/calculator
 esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0x7A0000 build/calculator.bin
 popd
+pushd apps/synth_piano
+esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0xA60000 build/synth_piano.bin
+popd
 ```
 
 ## Build

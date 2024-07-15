@@ -42,7 +42,7 @@ static lv_obj_t *g_group_list[3] = {0};
 LV_IMG_DECLARE(icon_tic_tac_toe)
 LV_IMG_DECLARE(icon_wifi_list)
 LV_IMG_DECLARE(icon_calculator)
-// LV_IMG_DECLARE(icon_app4)
+LV_IMG_DECLARE(icon_synth_piano)
 // LV_IMG_DECLARE(icon_app5)
 
 void ui_app1_start(void (*fn)(void));
@@ -55,7 +55,7 @@ static item_desc_t item[] = {
     { "Tic-Tac-Toe", (void *) &icon_tic_tac_toe, ui_app1_start, NULL},
     { "Wi-Fi List", (void *) &icon_wifi_list, ui_app2_start, NULL},
     { "Calculator", (void *) &icon_calculator, ui_app3_start, NULL},
-    { "App4", (void *) &icon_tic_tac_toe, ui_app4_start, NULL},
+    { "Piano", (void *) &icon_synth_piano, ui_app4_start, NULL},
     { "App5", (void *) &icon_tic_tac_toe, ui_app5_start, NULL},
 };
 
