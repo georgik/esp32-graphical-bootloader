@@ -37,7 +37,7 @@ cmake -P SelectBoard.cmake
 Build and flash all applications at once:
 
 ```shell
-idf.py flash monitor
+idf.py flash
 cmake -S . -B build -P Apps.cmake
 ```
 

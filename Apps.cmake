@@ -50,7 +50,8 @@ function(build_and_flash_app APP ADDR)
 endfunction()
 
 # Iterate through each sub-application and build/flash them
-foreach(APP_IDX RANGE 0 ${LENGTH_SUB_APP_NAMES}-1)
+math(EXPR LAST_IDX "${LENGTH_SUB_APP_NAMES} - 1")
+foreach(APP_IDX RANGE 0 ${LAST_IDX})
     list(GET SUB_APP_NAMES ${APP_IDX} APP)
     list(GET SUB_APP_ADDRS ${APP_IDX} ADDR)
     build_and_flash_app(${APP} ${ADDR})
