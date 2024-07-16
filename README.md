@@ -63,6 +63,21 @@ esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_res
 popd
 ```
 
+### Merging all applications
+
+Following command merges all applications into UF2 format:
+
+```
+esptool.py --chip esp32s3 merge_bin --format uf2 -o build/uf2.bin --flash_mode dio --flash_size 16MB \
+    0x1000 build/bootloader/bootloader.bin \
+    0x8000 build/partition_table/partition-table.bin \
+    0x220000 apps/tic_tac_toe/build/tic_tac_toe.bin \
+    0x4E0000 apps/wifi_list/build/wifi_list.bin \
+    0x7A0000 apps/calculator/build/calculator.bin \
+    0xA60000 apps/synth_piano/build/synth_piano.bin \
+    0xD20000 apps/game_of_life/build/game_of_life.bin
+```
+
 ## Build
 
 Initial build and flash of the application and partition table.
