@@ -6,7 +6,7 @@
 
 [Run on-line in Wokwi Simulator](https://wokwi.com/experimental/viewer?diagram=https://github.com/georgik/esp32-graphical-bootloader/blob/main/diagram.json&firmware=https://github.com/georgik/esp32-graphical-bootloader/releases/download/v0.3/graphical-bootloader-esp32-box-3-uf2.bin)
 
-[![Try it with ESP Launchpad](https://espressif.github.io/esp-launchpad/assets/try_with_launchpad.png)](https://espressif.github.io/esp-launchpad/?flashConfigURL=https://github.com/georgik/esp32-graphical-bootloader/blob/main/esp-launchpad.toml&app=graphical_bootloader)
+[![Try it with ESP Launchpad](https://espressif.github.io/esp-launchpad/assets/try_with_launchpad.png)](https://espressif.github.io/esp-launchpad/?flashConfigURL=https://raw.githubusercontent.com/georgik/esp32-graphical-bootloader/main/esp-launchpad.toml)
 
 
 ## Selected board
