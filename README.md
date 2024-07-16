@@ -83,8 +83,7 @@ Following command merges all applications into UF2 format:
 
 ```
 esptool.py --chip esp32s3 merge_bin --format uf2 -o build/uf2.bin --flash_mode dio --flash_size 16MB \
-    0x1000 build/bootloader/bootloader.bin \
-    0x8000 build/partition_table/partition-table.bin \
+    0x10000 build/esp32-graphical-bootloader.bin \
     0x220000 apps/tic_tac_toe/build/tic_tac_toe.bin \
     0x4E0000 apps/wifi_list/build/wifi_list.bin \
     0x7A0000 apps/calculator/build/calculator.bin \
