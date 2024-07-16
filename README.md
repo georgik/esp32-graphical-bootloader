@@ -32,6 +32,17 @@ Finish the configuration (copy of proper idf_component.yml to main and all appli
 cmake -P SelectBoard.cmake
 ```
 
+### Switching to other board
+
+If you already built a project for existing board and you'd like to build for a different one, then it's necessary remove sdkconfig created for the specific HW.
+
+```shell
+rm -rf managed_components sdkconfig build
+idf.py fullclean
+```
+
+You should repeat this process also for applications.
+
 ## Quick start
 
 Build and flash all applications at once:
@@ -47,19 +58,19 @@ cmake -S . -B build -P Apps.cmake
 idf.py build flash
 pushd apps/tic_tac_toe
 idf.py build
-esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0x220000 build/tic_tac_toe.bin
+esptool.py --before default_reset --after hard_reset write_flash 0x220000 build/tic_tac_toe.bin
 popd
 pushd apps/wifi_list
-esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0x4E0000 build/wifi_list.bin
+esptool.py --before default_reset --after hard_reset write_flash 0x4E0000 build/wifi_list.bin
 popd
 pushd apps/calculator
-esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0x7A0000 build/calculator.bin
+esptool.py --before default_reset --after hard_reset write_flash 0x7A0000 build/calculator.bin
 popd
 pushd apps/synth_piano
-esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0xA60000 build/synth_piano.bin
+esptool.py --before default_reset --after hard_reset write_flash 0xA60000 build/synth_piano.bin
 popd
 pushd apps/game_of_life
-esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0xD20000 build/game_of_life.bin
+esptool.py --before default_reset --after hard_reset write_flash 0xD20000 build/game_of_life.bin
 popd
 ```
 
