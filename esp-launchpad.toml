@@ -1,0 +1,7 @@
+esp_toml_version = 1.0
+firmware_images_url = "https://github.com/georgik/esp32-graphical-bootloader/releases/download/v0.3/"
+supported_apps = ["graphical_bootloader"]
+
+[graphical_bootloader]
+image.esp32s3 = "graphical-bootloader-esp32-box.bin"
+chipsets = ["esp32s3"]
