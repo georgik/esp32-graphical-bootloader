@@ -3,7 +3,7 @@ firmware_images_url = "https://github.com/georgik/esp32-graphical-bootloader/rel
 supported_apps = ["esp32-graphical-bootloader-esp32-box"]
 
 [esp32-graphical-bootloader-esp32-box]
-image.esp32s3 = "https://github.com/georgik/esp32-graphical-bootloader/releases/download/v0.3/esp32-graphical-bootloader-esp32-box.bin"
+image.esp32s3 = "graphical-bootloader-esp32-box.bin"
 android_app_url = ""
 ios_app_url = ""
 chipsets = ["esp32s3"]
