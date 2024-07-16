@@ -2,12 +2,46 @@
 
 3rd stage graphical bootloader which let's you pick an applications whic are stored in OTA partitions.
 
-The default configuration for ESP32-S3-BOX.
+## Selected board
 
-For ESP32-S3-BOX-3 or M5Stack-CoreS3 - uncomment BSP in `idf_component.yml`
+The project is by default configured for ESP32-S3-BOX-3. In case of different board please run one of following exports and then CMake command:
 
+- ESP32-S3-BOX-3
+```shell
+export SDKCONFIG_DEFAULTS=sdkconfig.defaults.esp-box-3
+```
+
+- ESP32-S3-BOX (prior Dec. 2023)
+```shell
+export SDKCONFIG_DEFAULTS=sdkconfig.defaults.esp-box
+```
+
+- ESP32-P4
+```shell
+export SDKCONFIG_DEFAULTS=sdkconfig.defaults.esp32_p4_function_ev_board
+```
+
+- M5Stack-CoreS3
+```shell
+export SDKCONFIG_DEFAULTS=sdkconfig.defaults.m5stack_core_s3
+```
+
+Finish the configuration (copy of proper idf_component.yml to main and all applications in apps directory):
+
+```shell
+cmake -P SelectBoard.cmake
+```
 
 ## Quick start
+
+Build and flash all applications at once:
+
+```shell
+idf.py flash
+cmake -S . -B build -P Apps.cmake
+```
+
+## Build applications one by one
 
 ```shell
 idf.py build flash

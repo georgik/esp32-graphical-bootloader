@@ -424,8 +424,6 @@ void ui_app5_start(void (*fn)(void))
 }
 
 void bootloader_ui(lv_obj_t *scr) {
-
-    bsp_display_lock(0);
     lv_obj_set_style_bg_color(lv_scr_act(), lv_color_make(237, 238, 239), LV_STATE_DEFAULT);
     ui_button_style_init();
 
@@ -453,6 +451,4 @@ void bootloader_ui(lv_obj_t *scr) {
     lv_obj_align(g_status_bar, LV_ALIGN_TOP_MID, 0, 0);
 
     ui_main_menu(g_item_index);
-
-    bsp_display_unlock();
 }

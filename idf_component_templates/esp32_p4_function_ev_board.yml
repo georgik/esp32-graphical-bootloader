@@ -1,0 +1,9 @@
+description: ESP32 Graphical Bootloader
+
+dependencies:
+  espressif/esp32_p4_function_ev_board: "^2.0.0"
+  #espressif/esp-box-3: "^1.2.0"
+  # Workaround for i2c: CONFLICT! driver_ng is not allowed to be used with this old driver
+  # esp_codec_dev:
+  #   public: true
+  #   version: "==1.1.0"
