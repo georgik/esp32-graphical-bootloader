@@ -61,7 +61,7 @@ static item_desc_t item[] = {
 
 static lv_obj_t *g_img_btn, *g_img_item = NULL;
 static lv_obj_t *g_lab_item = NULL;
-static lv_obj_t *g_led_item[6];
+static lv_obj_t *g_led_item[5];
 static size_t g_item_size = sizeof(item) / sizeof(item[0]);
 static lv_obj_t *g_status_bar = NULL;
 
