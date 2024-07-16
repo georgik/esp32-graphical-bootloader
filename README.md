@@ -1,8 +1,11 @@
 # ESP32 Graphical Bootloader
 
-3rd stage graphical bootloader which let's you pick an applications whic are stored in OTA partitions.
+3rd stage graphical bootloader which lets you pick applications stored in OTA partitions.
 
-![ESP32-S3-Box-3 Graphical Bootloader](doc/esp32-s3-box-3-graphical-bootloader.webp)
+[![ESP32-S3-Box-3 Graphical Bootloader](doc/esp32-s3-box-3-graphical-bootloader.webp)](https://wokwi.com/experimental/viewer?diagram=https://github.com/georgik/esp32-graphical-bootloader/blob/main/diagram.json&firmware=https://github.com/georgik/esp32-graphical-bootloader/releases/download/v0.3/graphical-bootloader-esp32-box-3-uf2.bin)
+
+[Run on-line in Wokwi Simulator](https://wokwi.com/experimental/viewer?diagram=https://github.com/georgik/esp32-graphical-bootloader/blob/main/diagram.json&firmware=https://github.com/georgik/esp32-graphical-bootloader/releases/download/v0.3/graphical-bootloader-esp32-box-3-uf2.bin)
+
 
 
 ## Selected board
