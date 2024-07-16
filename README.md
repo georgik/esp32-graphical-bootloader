@@ -2,6 +2,9 @@
 
 3rd stage graphical bootloader which let's you pick an applications whic are stored in OTA partitions.
 
+![ESP32-S3-Box-3 Graphical Bootloader](doc/esp32-s3-box-3-graphical-bootloader.webp)
+
+
 ## Selected board
 
 The project is by default configured for ESP32-S3-BOX-3. In case of different board please run one of following exports and then CMake command:
