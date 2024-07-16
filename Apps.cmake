@@ -41,7 +41,7 @@ function(build_and_flash_app APP ADDR)
 
     message(STATUS "Flashing ${APP} to address ${ADDR}")
     execute_process(
-        COMMAND esptool.py --chip esp32s3 --baud 921600 --before default_reset --after hard_reset write_flash ${ADDR} ${CMAKE_SOURCE_DIR}/apps/${APP}/build/${APP}.bin
+        COMMAND esptool.py --before default_reset --after hard_reset write_flash ${ADDR} ${CMAKE_SOURCE_DIR}/apps/${APP}/build/${APP}.bin
         RESULT_VARIABLE flash_result
     )
     if(NOT flash_result EQUAL 0)
