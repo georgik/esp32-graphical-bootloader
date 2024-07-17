@@ -70,14 +70,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ./artifacts
+          merge-multiple: false
 
       - name: Upload Release Assets
         run: |
-          echo "Listing files"
-          find artifacts
-          echo "Enf of list"
-          for file in ./artifacts/*; do
-            gh release upload ${{ needs.create-release.outputs.upload_url }} "$file" --clobber
+          for file in ./artifacts/*/combined.bin; do
+            base_name=$(basename $(dirname "$file"))
+            gh release upload ${{ needs.create-release.outputs.upload_url }} "$file" --clobber --name "graphical_bootloader_${base_name}.bin"
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
