@@ -10,7 +10,7 @@ jobs:
   create-release:
     runs-on: ubuntu-22.04
     outputs:
-      release_upload_url: ${{ steps.create_release.outputs.upload_url }}
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -22,7 +22,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build-and-release:
+  build-and-upload:
     needs: create-release
     strategy:
       matrix:
@@ -54,27 +54,30 @@ jobs:
           cmake -Daction=merge_binaries -P Bootloader.cmake
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: graphical_bootloader_${{ matrix.board.name }}
           path: build/combined.bin
 
   upload-release-assets:
-    needs: build-and-release
+    needs: build-and-upload
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           path: ./artifacts
 
       - name: Upload Release Assets
         run: |
+          echo "Listing files"
+          find artifacts
+          echo "Enf of list"
           for file in ./artifacts/*; do
-            gh release upload ${{ github.ref }} "$file" --clobber
+            gh release upload ${{ needs.create-release.outputs.upload_url }} "$file" --clobber
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
