@@ -1,0 +1,69 @@
+name: Build and Release Graphical Bootloader
+
+on:
+  push:
+    tags:
+      - 'v*.*'
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    strategy:
+      matrix:
+        board:
+          - { name: "ESP32-S3-BOX-3", sdkconfig: "sdkconfig.defaults.esp-box-3" }
+          - { name: "ESP32-S3-BOX", sdkconfig: "sdkconfig.defaults.esp-box" }
+          #- { name: "ESP32-P4", sdkconfig: "sdkconfig.defaults.esp32_p4_function_ev_board" }
+          - { name: "M5Stack-CoreS3", sdkconfig: "sdkconfig.defaults.m5stack_core_s3" }
+    runs-on: ubuntu-22.04
+    container: espressif/idf:release-v5.3
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - name: Set SDKCONFIG_DEFAULTS
+        run: echo "SDKCONFIG_DEFAULTS=${{ matrix.board.sdkconfig }}" >> $GITHUB_ENV
+
+      - name: Build the main application and sub-applications
+        run: |
+          . /opt/esp/idf/export.sh
+          cmake -Daction=select_board -P Bootloader.cmake
+          cmake -Daction=build_all_apps -P Bootloader.cmake
+
+      - name: Merge binaries into a single image
+        run: |
+          . /opt/esp/idf/export.sh
+          cmake -Daction=merge_binaries -P Bootloader.cmake
+
+      - name: Upload binary to release
+        uses: actions/upload-artifact@v2
+        with:
+          name: graphical_bootloader_${{ matrix.board.name }}
+          path: build/combined.bin
+
+  release:
+    needs: build-and-release
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/combined.bin
+          asset_name: graphical_bootloader_${{ matrix.board.name }}.bin
+          asset_content_type: application/octet-stream
