@@ -47,6 +47,7 @@ jobs:
           . /opt/esp/idf/export.sh
           cmake -Daction=select_board -P Bootloader.cmake
           #cmake -Daction=build_all_apps -P Bootloader.cmake
+          mkdir -p build
           touch build/combined.bin
           mv build/combined.bin build/graphical_bootloader_${{ matrix.board.name }}.bin
           gh release upload ${{ needs.create-release.outputs.upload_url }} "build/graphical_bootloader_${{ matrix.board.name }}.bin" --clobber
