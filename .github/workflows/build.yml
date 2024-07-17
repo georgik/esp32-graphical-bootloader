@@ -47,10 +47,9 @@ jobs:
           . /opt/esp/idf/export.sh
           cmake -Daction=select_board -P Bootloader.cmake
           #cmake -Daction=build_all_apps -P Bootloader.cmake
-          mkdir -p build
+          mkdir build
           touch build/combined.bin
           mv build/combined.bin build/graphical_bootloader_${{ matrix.board.name }}.bin
-          gh release upload ${{ needs.create-release.outputs.upload_url }} "build/graphical_bootloader_${{ matrix.board.name }}.bin" --clobber
 
       #- name: Merge binaries into a single image
       #  run: |
@@ -61,4 +60,26 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: graphical_bootloader_${{ matrix.board.name }}
-          path: build/combined.bin
+          path: build/graphical_bootloader_${{ matrix.board.name }}.bin
+
+  upload-release-assets:
+    needs: build-and-upload
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+          merge-multiple: true
+
+      - name: Rename and Upload Release Assets
+        run: |
+          ls -l ./artifacts
+          for file in ./artifacts/*.bin; do
+            gh release upload ${{ needs.create-release.outputs.upload_url }} "${file}" --clobber
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
