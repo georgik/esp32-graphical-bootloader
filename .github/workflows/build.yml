@@ -10,27 +10,22 @@ jobs:
   create-release:
     runs-on: ubuntu-22.04
     outputs:
-      upload_url: ${{ steps.get_upload_url.outputs.url }}
+      release_upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Create Release
+      - name: Set up GitHub CLI
+        uses: cli/gh-action@v2
+        with:
+          version: latest
+
+      - name: Create Draft Release
         id: create_release
-        uses: actions/create-release@v1
+        run: |
+          gh release create ${{ github.ref }} --title "Release ${{ github.ref }}" --notes "Release notes for ${{ github.ref }}" --draft
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: true
-          prerelease: true
-
-      - name: Get Upload URL
-        id: get_upload_url
-        run: |
-          url=$(echo "${{ steps.create_release.outputs.upload_url }}" | sed -e 's/{.*//')
-          echo "url=$url" >> $GITHUB_OUTPUT
 
   build-and-release:
     needs: create-release
@@ -81,12 +76,15 @@ jobs:
         with:
           path: ./artifacts
 
+      - name: Set up GitHub CLI
+        uses: cli/gh-action@v2
+        with:
+          version: latest
+
       - name: Upload Release Assets
-        uses: actions/upload-release-asset@v1
+        run: |
+          for file in ./artifacts/*; do
+            gh release upload ${{ github.ref }} "$file" --clobber
+          done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./artifacts/*
-          asset_name: graphical_bootloader_${{ matrix.board.name }}.bin
-          asset_content_type: application/octet-stream
