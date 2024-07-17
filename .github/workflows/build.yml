@@ -10,7 +10,7 @@ jobs:
   create-release:
     runs-on: ubuntu-22.04
     outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      upload_url: ${{ steps.get_upload_url.outputs.url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -23,8 +23,14 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+          draft: true
+          prerelease: true
+
+      - name: Get Upload URL
+        id: get_upload_url
+        run: |
+          url=$(echo "${{ steps.create_release.outputs.upload_url }}" | sed -e 's/{.*//')
+          echo "url=$url" >> $GITHUB_OUTPUT
 
   build-and-release:
     needs: create-release
