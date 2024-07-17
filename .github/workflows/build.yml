@@ -15,11 +15,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up GitHub CLI
-        uses: cli/gh-action@v2
-        with:
-          version: latest
-
       - name: Create Draft Release
         id: create_release
         run: |
@@ -75,11 +70,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           path: ./artifacts
-
-      - name: Set up GitHub CLI
-        uses: cli/gh-action@v2
-        with:
-          version: latest
 
       - name: Upload Release Assets
         run: |
