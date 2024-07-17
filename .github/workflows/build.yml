@@ -72,11 +72,12 @@ jobs:
           path: ./artifacts
           merge-multiple: false
 
-      - name: Upload Release Assets
+      - name: Rename and Upload Release Assets
         run: |
           for file in ./artifacts/*/combined.bin; do
             base_name=$(basename $(dirname "$file"))
-            gh release upload ${{ needs.create-release.outputs.upload_url }} "$file" --clobber --name "graphical_bootloader_${base_name}.bin"
+            mv "$file" "./artifacts/graphical_bootloader_${base_name}.bin"
+            gh release upload ${{ needs.create-release.outputs.upload_url }} "./artifacts/graphical_bootloader_${base_name}.bin" --clobber
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
