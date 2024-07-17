@@ -142,15 +142,6 @@ function(merge_binaries)
     if(NOT merge_result EQUAL 0)
         message(FATAL_ERROR "Failed to merge binaries")
     endif()
-
-    message(STATUS "Converting combined.bin to combined.uf2...")
-    execute_process(
-        COMMAND python ${CMAKE_SOURCE_DIR}/uf2conv.py ${CMAKE_SOURCE_DIR}/build/combined.bin --chip esp32s3 --base 0x0 --output ${CMAKE_SOURCE_DIR}/build/combined.uf2
-        RESULT_VARIABLE uf2_result
-    )
-    if(NOT uf2_result EQUAL 0)
-        message(FATAL_ERROR "Failed to convert to UF2")
-    endif()
 endfunction()
 
 # Function to run all steps
