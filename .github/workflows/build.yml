@@ -15,10 +15,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Extract Tag Name
+        id: extract_tag_name
+        run: echo "tag_name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
       - name: Create Draft Release
         id: create_release
         run: |
-          gh release create ${{ github.ref }} --title "Release ${{ github.ref }}" --notes "Release notes for ${{ github.ref }}" --draft
+          gh release create ${{ steps.extract_tag_name.outputs.tag_name }} --title "Release ${{ steps.extract_tag_name.outputs.tag_name }}" --notes "Release notes for ${{ steps.extract_tag_name.outputs.tag_name }}" --draft
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -27,10 +31,10 @@ jobs:
     strategy:
       matrix:
         board:
-          - { name: "ESP32-S3-BOX-3", sdkconfig: "sdkconfig.defaults.esp-box-3" }
-          - { name: "ESP32-S3-BOX", sdkconfig: "sdkconfig.defaults.esp-box" }
-          #- { name: "ESP32-P4", sdkconfig: "sdkconfig.defaults.esp32_p4_function_ev_board" }
-          - { name: "M5Stack-CoreS3", sdkconfig: "sdkconfig.defaults.m5stack_core_s3" }
+          - { name: "esp32-s3-box-3", sdkconfig: "sdkconfig.defaults.esp-box-3" }
+          - { name: "esp32-s3-box", sdkconfig: "sdkconfig.defaults.esp-box" }
+          #- { name: "esp32-p4", sdkconfig: "sdkconfig.defaults.esp32_p4_function_ev_board" }
+          - { name: "m5stack-cores3", sdkconfig: "sdkconfig.defaults.m5stack_core_s3" }
     runs-on: ubuntu-22.04
     container: espressif/idf:release-v5.3
 
@@ -75,11 +79,15 @@ jobs:
           path: ./artifacts
           merge-multiple: true
 
+      - name: Extract Tag Name
+        id: extract_tag_name
+        run: echo "tag_name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
       - name: Rename and Upload Release Assets
         run: |
           ls -l ./artifacts
           for file in ./artifacts/*.bin; do
-            gh release upload ${{ needs.create-release.outputs.upload_url }} "${file}" --clobber
+            gh release upload ${{ steps.extract_tag_name.outputs.tag_name }} "${file}" --clobber
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
