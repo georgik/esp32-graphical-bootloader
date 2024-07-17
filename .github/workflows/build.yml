@@ -50,15 +50,15 @@ jobs:
         run: |
           . /opt/esp/idf/export.sh
           cmake -Daction=select_board -P Bootloader.cmake
-          #cmake -Daction=build_all_apps -P Bootloader.cmake
-          mkdir build
-          touch build/combined.bin
-          mv build/combined.bin build/graphical_bootloader_${{ matrix.board.name }}.bin
+          cmake -Daction=build_all_apps -P Bootloader.cmake
+        #   mkdir build
+        #   touch build/combined.bin
+        #   mv build/combined.bin build/graphical_bootloader_${{ matrix.board.name }}.bin
 
-      #- name: Merge binaries into a single image
-      #  run: |
-      #    . /opt/esp/idf/export.sh
-      #    cmake -Daction=merge_binaries -P Bootloader.cmake
+      - name: Merge binaries into a single image
+        run: |
+         . /opt/esp/idf/export.sh
+         cmake -Daction=merge_binaries -P Bootloader.cmake
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
