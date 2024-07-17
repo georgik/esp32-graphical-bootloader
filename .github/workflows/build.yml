@@ -51,9 +51,7 @@ jobs:
           . /opt/esp/idf/export.sh
           cmake -Daction=select_board -P Bootloader.cmake
           cmake -Daction=build_all_apps -P Bootloader.cmake
-        #   mkdir build
-        #   touch build/combined.bin
-        #   mv build/combined.bin build/graphical_bootloader_${{ matrix.board.name }}.bin
+          mv build/combined.bin build/graphical_bootloader_${{ matrix.board.name }}.bin
 
       - name: Merge binaries into a single image
         run: |
@@ -63,7 +61,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: graphical_bootloader_${{ matrix.board.name }}
+          name: graphical_bootloader_${{ matrix.board.name }}.bin
           path: build/graphical_bootloader_${{ matrix.board.name }}.bin
 
   upload-release-assets:
