@@ -65,6 +65,18 @@ jobs:
           name: graphical-bootloader-${{ matrix.board.name }}.bin
           path: build/graphical-bootloader-${{ matrix.board.name }}.bin
 
+      - name: Merge binaries into a uf2 image
+        run: |
+         . /opt/esp/idf/export.sh
+         cmake -Daction=merge_binaries_uf2 -P Bootloader.cmake
+         mv build/uf2.bin build/graphical-bootloader-${{ matrix.board.name }}.uf2
+
+      - name: Upload UF2 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: graphical-bootloader-${{ matrix.board.name }}.uf2
+          path: build/graphical-bootloader-${{ matrix.board.name }}.uf2
+
   upload-release-assets:
     needs: build-and-upload
     runs-on: ubuntu-22.04
