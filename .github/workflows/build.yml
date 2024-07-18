@@ -56,14 +56,14 @@ jobs:
         run: |
          . /opt/esp/idf/export.sh
          cmake -Daction=merge_binaries -P Bootloader.cmake
-         mv build/combined.bin build/graphical_bootloader_${{ matrix.board.name }}.bin
+         mv build/combined.bin build/graphical-bootloader-${{ matrix.board.name }}.bin
 
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: graphical_bootloader_${{ matrix.board.name }}.bin
-          path: build/graphical_bootloader_${{ matrix.board.name }}.bin
+          name: graphical-bootloader-${{ matrix.board.name }}.bin
+          path: build/graphical-bootloader-${{ matrix.board.name }}.bin
 
   upload-release-assets:
     needs: build-and-upload
