@@ -11,6 +11,9 @@
         "attrs": { "psramSize": "16", "flashSize": "16" }
       }
     ],
-    "connections": [ [ "$serialMonitor:RX", "esp32:G43", "", [] ], [ "$serialMonitor:TX", "esp32:G44", "", [] ] ],
+    "connections": [
+      [ "$serialMonitor:RX", "esp32:G44", "", [] ],
+      [ "$serialMonitor:TX", "esp32:G43", "", [] ]
+    ],
     "dependencies": {}
 }
