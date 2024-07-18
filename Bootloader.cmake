@@ -118,7 +118,7 @@ function(merge_binaries)
     # Build command for esptool.py merge_bin
     set(MERGE_CMD esptool.py --chip esp32s3 merge_bin -o ${CMAKE_SOURCE_DIR}/build/combined.bin
         --flash_mode dio --flash_size 16MB
-        0x1000 ${BOOTLOADER_BIN}
+        0x0 ${BOOTLOADER_BIN}
         0x8000 ${PARTITION_TABLE_BIN}
         0xf000 ${OTA_DATA_INITIAL_BIN}
         0x20000 ${MAIN_APP_BIN}

@@ -93,7 +93,8 @@ esptool.py --chip esp32s3 merge_bin --format uf2 -o build/uf2.bin --flash_mode d
 
 The following command merges all applications into binary image format:
 ```shell
-esptool.py --chip esp32s3 merge_bin  -o build/all.bin --flash_mode dio --flash_size 16MB \ 0x0 build/bootloader/bootloader.bin \
+esptool.py --chip esp32s3 merge_bin  -o build/all.bin --flash_mode dio --flash_size 16MB \
+    0x0 build/bootloader/bootloader.bin \
     0x8000 build/partition_table/partition-table.bin \
     0xf000 build/ota_data_initial.bin \
     0x20000 build/esp32-graphical-bootloader.bin \
