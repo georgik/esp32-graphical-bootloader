@@ -62,3 +62,6 @@ sdkconfig.*.vscode
 
 main/images/
 
+.DS_Store
+.vscode/
+
