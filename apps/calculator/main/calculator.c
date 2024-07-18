@@ -86,7 +86,7 @@ void reset_to_factory_app() {
     const esp_partition_t *factory_partition = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_APP_FACTORY, NULL);
     if (factory_partition != NULL) {
         if (esp_ota_set_boot_partition(factory_partition) == ESP_OK) {
-            printf("Set boot partition to factory, restarting now.\n");
+            printf("Set boot partition to factory.\n");
         } else {
             printf("Failed to set boot partition to factory.\n");
         }
