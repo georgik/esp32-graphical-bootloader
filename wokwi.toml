@@ -1,5 +1,5 @@
 [wokwi]
 version = 1
-elf = "build/combined.bin"
-firmware = "build/combined.bin"
+elf = "build/uf2.bin"
+firmware = "build/uf2.bin"
 
