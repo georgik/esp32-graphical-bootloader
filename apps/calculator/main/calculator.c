@@ -129,4 +129,8 @@ void app_main(void) {
     lv_obj_add_event_cb(btnm, btn_event_cb, LV_EVENT_VALUE_CHANGED, NULL);
 
     bsp_display_backlight_on();
+
+    while (1) {
+        vTaskDelay(pdMS_TO_TICKS(1000)); // Add a small delay to prevent watchdog issues
+    }
 }
