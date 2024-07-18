@@ -16,5 +16,4 @@
       [ "$serialMonitor:TX", "esp32:G43", "", [] ]
     ],
     "dependencies": {}
-  }
-  
+}
