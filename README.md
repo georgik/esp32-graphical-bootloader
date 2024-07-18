@@ -33,7 +33,7 @@ export SDKCONFIG_DEFAULTS=sdkconfig.defaults.m5stack_core_s3
 Finish the configuration (copy of proper idf_component.yml to main and all applications in apps directory):
 
 ```shell
-cmake -P SelectBoard.cmake
+cmake -Daction=select_board -P Bootloader.cmake
 ```
 
 ### Switching to other board
@@ -52,8 +52,7 @@ You should repeat this process also for applications.
 Build and flash all applications at once:
 
 ```shell
-idf.py flash
-cmake -S . -B build -P Apps.cmake
+cmake -Daction=build_all_apps -P Bootloader.cmake
 ```
 
 ## Build applications one by one
