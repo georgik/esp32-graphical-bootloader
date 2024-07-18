@@ -12,8 +12,8 @@
       }
     ],
     "connections": [
-      [ "$serialMonitor:RX", "esp32:G44", "", [] ],
-      [ "$serialMonitor:TX", "esp32:G43", "", [] ]
+      [ "$serialMonitor:RX", "esp32:G43", "", [] ],
+      [ "$serialMonitor:TX", "esp32:G44", "", [] ]
     ],
     "dependencies": {}
 }
