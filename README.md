@@ -83,7 +83,10 @@ The following command merges all applications into UF2 format:
 
 ```shell
 esptool.py --chip esp32s3 merge_bin --format uf2 -o build/uf2.bin --flash_mode dio --flash_size 16MB \
-    0x10000 build/esp32-graphical-bootloader.bin \
+    0x0 build/bootloader/bootloader.bin \
+    0x8000 build/partition_table/partition-table.bin \
+    0xf000 build/ota_data_initial.bin \
+    0x20000 build/esp32-graphical-bootloader.bin \
     0x220000 apps/tic_tac_toe/build/tic_tac_toe.bin \
     0x4E0000 apps/wifi_list/build/wifi_list.bin \
     0x7A0000 apps/calculator/build/calculator.bin \
@@ -93,7 +96,7 @@ esptool.py --chip esp32s3 merge_bin --format uf2 -o build/uf2.bin --flash_mode d
 
 The following command merges all applications into binary image format:
 ```shell
-esptool.py --chip esp32s3 merge_bin  -o build/all.bin --flash_mode dio --flash_size 16MB \
+esptool.py --chip esp32s3 merge_bin  -o build/combined.bin --flash_mode dio --flash_size 16MB \
     0x0 build/bootloader/bootloader.bin \
     0x8000 build/partition_table/partition-table.bin \
     0xf000 build/ota_data_initial.bin \
@@ -108,7 +111,7 @@ esptool.py --chip esp32s3 merge_bin  -o build/all.bin --flash_mode dio --flash_s
 The single binary can be flashed by command:
 
 ```shell
-esptool.py --chip esp32s3  --baud 921600 write_flash 0x0000 build/all.bin
+esptool.py --chip esp32s3  --baud 921600 write_flash 0x0000 build/combined.bin
 ```
 
 ## Build
