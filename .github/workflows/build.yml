@@ -97,7 +97,7 @@ jobs:
       - name: Rename and Upload Release Assets
         run: |
           ls -l ./artifacts
-          for file in ./artifacts/*.bin; do
+          for file in ./artifacts/*.bin ./artifacts/*.uf2; do
             gh release upload ${{ steps.extract_tag_name.outputs.tag_name }} "${file}" --clobber
           done
         env:
