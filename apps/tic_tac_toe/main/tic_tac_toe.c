@@ -89,12 +89,6 @@ static void event_handler(lv_event_t *e) {
     }
 }
 
-void lvgl_task(void *pvParameter) {
-    while (1) {
-        vTaskDelay(pdMS_TO_TICKS(1000)); // Add a small delay to prevent watchdog issues
-    }
-}
-
 void reset_to_factory_app() {
     // Get the partition structure for the factory partition
     const esp_partition_t *factory_partition = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_APP_FACTORY, NULL);
@@ -119,8 +113,8 @@ void app_main(void) {
     // Initialize the BSP
     bsp_i2c_init();
     bsp_display_start();
-    lv_init();
 
+    bsp_display_lock(0);
     // Create a grid for buttons
     lv_obj_t *grid = lv_obj_create(lv_scr_act());
     static lv_coord_t col_dsc[] = {LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
@@ -140,11 +134,13 @@ void app_main(void) {
             btn_grid[row][col] = btn;
         }
     }
+    bsp_display_unlock();
 
     bsp_display_backlight_on();
 
     reset_game();
 
-    // Create a task to handle LVGL
-    xTaskCreate(lvgl_task, "lvgl_task", 16384, NULL, 1, NULL);
+    while (1) {
+        vTaskDelay(pdMS_TO_TICKS(1000)); // Add a small delay to prevent watchdog issues
+    }
 }
