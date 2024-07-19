@@ -2,9 +2,10 @@
 
 3rd stage graphical bootloader which lets you pick applications stored in OTA partitions.
 
-[![ESP32-S3-Box-3 Graphical Bootloader](doc/esp32-s3-box-3-graphical-bootloader.webp)](https://wokwi.com/experimental/viewer?diagram=https://github.com/georgik/esp32-graphical-bootloader/blob/main/diagram.json&firmware=https://github.com/georgik/esp32-graphical-bootloader/releases/download/v0.3/graphical-bootloader-esp32-box-3-uf2.bin)
+[![ESP32-S3-Box-3 Graphical Bootloader](doc/esp32-s3-box-3-graphical-bootloader.webp)](https://wokwi.com/experimental/viewer?diagram=https://gist.githubusercontent.com/urish/c3d58ddaa0817465605ecad5dc171396/raw/ab1abfa902835a9503d412d55a97ee2b7e0a6b96/diagram.json&firmware=https://github.com/georgik/esp32-graphical-bootloader/releases/latest/download/graphical-bootloader-esp32-s3-box.uf2
+)
 
-[Run on-line in Wokwi Simulator](https://wokwi.com/experimental/viewer?diagram=https://github.com/georgik/esp32-graphical-bootloader/blob/main/diagram.json&firmware=https://github.com/georgik/esp32-graphical-bootloader/releases/download/v0.3/graphical-bootloader-esp32-box-3-uf2.bin)
+[Run on-line in Wokwi Simulator](https://wokwi.com/experimental/viewer?diagram=https://gist.githubusercontent.com/urish/c3d58ddaa0817465605ecad5dc171396/raw/ab1abfa902835a9503d412d55a97ee2b7e0a6b96/diagram.json&firmware=https://github.com/georgik/esp32-graphical-bootloader/releases/latest/download/graphical-bootloader-esp32-s3-box.uf2)
 
 ## Selected board
 
