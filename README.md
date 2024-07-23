@@ -36,7 +36,7 @@ idf.py @boards/m5stack_core_s3.cfg reconfigure
 Build and flash all applications at once:
 
 ```shell
-cmake -Daction=build_all_apps -P Bootloader.cmake
+cmake -DBUILD_BOARD=esp-box -Daction=build_all_apps -P Bootloader.cmake
 ```
 
 ## Build applications one by one
