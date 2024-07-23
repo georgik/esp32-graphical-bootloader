@@ -1,7 +1,16 @@
 description: ESP32 Graphical Bootloader
 
 dependencies:
-  espressif/esp-box-3: "^1.2.0"
+  espressif/esp-box-3:
+    version: "^1.2.0"
+    rules:
+    - if: "target == ${USE_ESP_BOX_3}"
+  espressif/esp-box:
+    version: "*"
+    rules:
+    - if: "target == ${USE_ESP_BOX}"
+
+
   # Workaround for i2c: CONFLICT! driver_ng is not allowed to be used with this old driver
   esp_codec_dev:
     public: true

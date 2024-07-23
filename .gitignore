@@ -53,6 +53,7 @@ dkms.conf
 
 # ESP-IDF
 build/
+build.*/
 managed_components/
 dependencies.lock
 
