@@ -13,40 +13,23 @@ The project is by default configured for ESP32-S3-BOX-3. In case of different bo
 
 - ESP32-S3-BOX-3
 ```shell
-export SDKCONFIG_DEFAULTS=sdkconfig.defaults.esp-box-3
+idf.py @boards/esp-box-3.cfg reconfigure
 ```
 
 - ESP32-S3-BOX (prior Dec. 2023)
 ```shell
-export SDKCONFIG_DEFAULTS=sdkconfig.defaults.esp-box
+idf.py @boards/esp-box.cfg reconfigure
 ```
 
 - ESP32-P4
 ```shell
-export SDKCONFIG_DEFAULTS=sdkconfig.defaults.esp32_p4_function_ev_board
+idf.py @boards/esp32_p4_function_ev_board.cfg reconfigure
 ```
 
 - M5Stack-CoreS3
 ```shell
-export SDKCONFIG_DEFAULTS=sdkconfig.defaults.m5stack_core_s3
+idf.py @boards/m5stack_core_s3.cfg reconfigure
 ```
-
-Finish the configuration (copy of proper idf_component.yml to main and all applications in apps directory):
-
-```shell
-cmake -Daction=select_board -P Bootloader.cmake
-```
-
-### Switching to other board
-
-If you already built a project for existing board and you'd like to build for a different one, then it's necessary remove sdkconfig created for the specific HW.
-
-```shell
-rm -rf managed_components sdkconfig build
-idf.py fullclean
-```
-
-You should repeat this process also for applications.
 
 ## Quick start
 
@@ -120,13 +103,13 @@ esptool.py --chip esp32s3  --baud 921600 write_flash 0x0000 build/combined.bin
 Initial build and flash of the application and partition table.
 
 ```shell
-idf.py build flash monitor
+idf.py @boards/esp-box-3.cfg build flash monitor
 ```
 
 After the initial flash, it's possible to use following command, just to update the factory application:
 
 ```shell
-idf.py app-flash monitor
+idf.py @boards/esp-box-3.cfg app-flash monitor
 ```
 
 ## Flashing apps
