@@ -80,22 +80,22 @@ esptool.py --chip esp32s3 merge_bin --format uf2 -o build/uf2.bin --flash_mode d
 
 The following command merges all applications into binary image format:
 ```shell
-esptool.py --chip esp32s3 merge_bin  -o build/combined.bin --flash_mode dio --flash_size 16MB \
-    0x0 build/bootloader/bootloader.bin \
-    0x8000 build/partition_table/partition-table.bin \
-    0xf000 build/ota_data_initial.bin \
-    0x20000 build/esp32-graphical-bootloader.bin \
-    0x220000 apps/tic_tac_toe/build/tic_tac_toe.bin \
-    0x4E0000 apps/wifi_list/build/wifi_list.bin \
-    0x7A0000 apps/calculator/build/calculator.bin \
-    0xA60000 apps/synth_piano/build/synth_piano.bin \
-    0xD20000 apps/game_of_life/build/game_of_life.bin
+esptool.py --chip esp32s3 merge_bin  -o build.esp-box/combined.bin --flash_mode dio --flash_size 16MB \
+    0x0 build.esp-box/bootloader/bootloader.bin \
+    0x8000 build.esp-box/partition_table/partition-table.bin \
+    0xf000 build.esp-box/ota_data_initial.bin \
+    0x20000 build.esp-box/esp32-graphical-bootloader.bin \
+    0x220000 apps/tic_tac_toe/build.esp-box/tic_tac_toe.bin \
+    0x4E0000 apps/wifi_list/build.esp-box/wifi_list.bin \
+    0x7A0000 apps/calculator/build.esp-box/calculator.bin \
+    0xA60000 apps/synth_piano/build.esp-box/synth_piano.bin \
+    0xD20000 apps/game_of_life/build.esp-box/game_of_life.bin
 ```
 
 The single binary can be flashed by command:
 
 ```shell
-esptool.py --chip esp32s3  --baud 921600 write_flash 0x0000 build/combined.bin
+esptool.py --chip esp32s3  --baud 921600 write_flash 0x0000 build.esp-box/combined.bin
 ```
 
 ## Build
