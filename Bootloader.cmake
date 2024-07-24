@@ -1,66 +1,15 @@
 cmake_minimum_required(VERSION 3.5)
 
-# Function to select the board
-function(select_board)
-    if(NOT DEFINED ENV{SDKCONFIG_DEFAULTS})
-        message(FATAL_ERROR "Environment variable SDKCONFIG_DEFAULTS is not set.")
-    else()
-        set(SDKCONFIG_DEFAULTS $ENV{SDKCONFIG_DEFAULTS})
-    endif()
-
-    message(STATUS "Using SDKCONFIG_DEFAULTS: ${SDKCONFIG_DEFAULTS}")
-
-    # Map SDKCONFIG_DEFAULTS to the corresponding idf_component.yml template
-    if(SDKCONFIG_DEFAULTS STREQUAL "sdkconfig.defaults.esp-box")
-        set(IDF_COMPONENT_YML_TEMPLATE "${CMAKE_SOURCE_DIR}/idf_component_templates/esp-box.yml")
-    elseif(SDKCONFIG_DEFAULTS STREQUAL "sdkconfig.defaults.esp-box-3")
-        set(IDF_COMPONENT_YML_TEMPLATE "${CMAKE_SOURCE_DIR}/idf_component_templates/esp-box-3.yml")
-    elseif(SDKCONFIG_DEFAULTS STREQUAL "sdkconfig.defaults.m5stack_core_s3")
-        set(IDF_COMPONENT_YML_TEMPLATE "${CMAKE_SOURCE_DIR}/idf_component_templates/m5stack_core_s3.yml")
-    elseif(SDKCONFIG_DEFAULTS STREQUAL "sdkconfig.defaults.esp32_p4_function_ev_board")
-        set(IDF_COMPONENT_YML_TEMPLATE "${CMAKE_SOURCE_DIR}/idf_component_templates/esp32_p4_function_ev_board.yml")
-    else()
-        message(FATAL_ERROR "Unsupported SDKCONFIG_DEFAULTS: ${SDKCONFIG_DEFAULTS}")
-    endif()
-
-    message(STATUS "IDF_COMPONENT_YML_TEMPLATE: ${IDF_COMPONENT_YML_TEMPLATE}")
-
-    # Copy the appropriate idf_component.yml template to main
-    set(IDF_COMPONENT_YML_DEST "${CMAKE_SOURCE_DIR}/main/idf_component.yml")
-    message(STATUS "Copying ${IDF_COMPONENT_YML_TEMPLATE} to ${IDF_COMPONENT_YML_DEST}")
-    configure_file(${IDF_COMPONENT_YML_TEMPLATE} ${IDF_COMPONENT_YML_DEST} COPYONLY)
-
-    # Verify that the file was copied to main
-    if(EXISTS ${IDF_COMPONENT_YML_DEST})
-        message(STATUS "File copied successfully to ${IDF_COMPONENT_YML_DEST}")
-    else()
-        message(FATAL_ERROR "Failed to copy ${IDF_COMPONENT_YML_TEMPLATE} to ${IDF_COMPONENT_YML_DEST}")
-    endif()
-
-    # List of sub-applications
-    set(SUB_APPS tic_tac_toe wifi_list calculator synth_piano game_of_life)
-
-    # Copy the appropriate idf_component.yml template to each sub-application
-    foreach(APP ${SUB_APPS})
-        set(IDF_COMPONENT_YML_DEST "${CMAKE_SOURCE_DIR}/apps/${APP}/main/idf_component.yml")
-        message(STATUS "Copying ${IDF_COMPONENT_YML_TEMPLATE} to ${IDF_COMPONENT_YML_DEST}")
-        configure_file(${IDF_COMPONENT_YML_TEMPLATE} ${IDF_COMPONENT_YML_DEST} COPYONLY)
-
-        # Verify that the file was copied to the sub-application
-        if(EXISTS ${IDF_COMPONENT_YML_DEST})
-            message(STATUS "File copied successfully to ${IDF_COMPONENT_YML_DEST}")
-        else()
-            message(FATAL_ERROR "Failed to copy ${IDF_COMPONENT_YML_TEMPLATE} to ${IDF_COMPONENT_YML_DEST}")
-        endif()
-    endforeach()
-endfunction()
+if(NOT DEFINED BUILD_BOARD)
+    message(FATAL_ERROR "BUILD_BOARD CMake variable is not set")
+endif()
 
 # Function to build all applications
 function(build_all_apps)
     # Build main app
     message(STATUS "Building main application")
     execute_process(
-        COMMAND idf.py build
+        COMMAND idf.py @boards/${BUILD_BOARD}.cfg build
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         RESULT_VARIABLE build_main_result
     )
@@ -75,7 +24,7 @@ function(build_all_apps)
     function(build_app APP)
         message(STATUS "Building ${APP}")
         execute_process(
-            COMMAND idf.py build
+            COMMAND idf.py @../../boards/${BUILD_BOARD}.cfg build
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/apps/${APP}
             RESULT_VARIABLE build_result
         )
