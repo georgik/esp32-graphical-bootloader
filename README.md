@@ -2,6 +2,13 @@
 
 3rd stage graphical bootloader which lets you pick applications stored in OTA partitions.
 
+
+## How it works
+
+The bootloader allows user to select an application from graphical menu. After the selection the partition is selected and the chip rebooted. The bootloader switches to the newly selected application. During the start of the application there is a code which switches bootloader back to the first application with the bootloader. After another restart the original application with the bootloader is visible again.
+
+### Test on-line
+
 [![ESP32-S3-Box-3 Graphical Bootloader](doc/esp32-s3-box-3-graphical-bootloader.webp)](https://wokwi.com/experimental/viewer?diagram=https://gist.githubusercontent.com/urish/c3d58ddaa0817465605ecad5dc171396/raw/ab1abfa902835a9503d412d55a97ee2b7e0a6b96/diagram.json&firmware=https://github.com/georgik/esp32-graphical-bootloader/releases/latest/download/graphical-bootloader-esp32-s3-box.uf2
 )
 
@@ -9,7 +16,8 @@
 
 ## Selected board
 
-The project is by default configured for ESP32-S3-BOX-3. In case of different board please run one of following exports and then CMake command:
+The project is by default configured for ESP32-S3-BOX-3. Build configuration for the available boards are stored in `boards` directory.
+If you need a different board please run one of following exports and then CMake command:
 
 - ESP32-S3-BOX-3
 ```shell
@@ -36,107 +44,73 @@ idf.py @boards/m5stack_core_s3.cfg reconfigure
 Build and flash all applications at once:
 
 ```shell
-cmake -DBUILD_BOARD=esp-box -Daction=build_all_apps -P Bootloader.cmake
+cmake -DBUILD_BOARD=esp-box-3 -Daction=build_all_apps -P Bootloader.cmake
 ```
 
 ## Build applications one by one
 
-```shell
-idf.py build flash
-pushd apps/tic_tac_toe
-idf.py build
-esptool.py --before default_reset --after hard_reset write_flash 0x220000 build/tic_tac_toe.bin
-popd
-pushd apps/wifi_list
-esptool.py --before default_reset --after hard_reset write_flash 0x4E0000 build/wifi_list.bin
-popd
-pushd apps/calculator
-esptool.py --before default_reset --after hard_reset write_flash 0x7A0000 build/calculator.bin
-popd
-pushd apps/synth_piano
-esptool.py --before default_reset --after hard_reset write_flash 0xA60000 build/synth_piano.bin
-popd
-pushd apps/game_of_life
-esptool.py --before default_reset --after hard_reset write_flash 0xD20000 build/game_of_life.bin
-popd
-```
-
-### Merging all applications
-
-The following command merges all applications into UF2 format:
-
-```shell
-esptool.py --chip esp32s3 merge_bin --format uf2 -o build/uf2.bin --flash_mode dio --flash_size 16MB \
-    0x0 build/bootloader/bootloader.bin \
-    0x8000 build/partition_table/partition-table.bin \
-    0xf000 build/ota_data_initial.bin \
-    0x20000 build/esp32-graphical-bootloader.bin \
-    0x220000 apps/tic_tac_toe/build/tic_tac_toe.bin \
-    0x4E0000 apps/wifi_list/build/wifi_list.bin \
-    0x7A0000 apps/calculator/build/calculator.bin \
-    0xA60000 apps/synth_piano/build/synth_piano.bin \
-    0xD20000 apps/game_of_life/build/game_of_life.bin
-```
-
-The following command merges all applications into binary image format:
-```shell
-esptool.py --chip esp32s3 merge_bin  -o build.esp-box/combined.bin --flash_mode dio --flash_size 16MB \
-    0x0 build.esp-box/bootloader/bootloader.bin \
-    0x8000 build.esp-box/partition_table/partition-table.bin \
-    0xf000 build.esp-box/ota_data_initial.bin \
-    0x20000 build.esp-box/esp32-graphical-bootloader.bin \
-    0x220000 apps/tic_tac_toe/build.esp-box/tic_tac_toe.bin \
-    0x4E0000 apps/wifi_list/build.esp-box/wifi_list.bin \
-    0x7A0000 apps/calculator/build.esp-box/calculator.bin \
-    0xA60000 apps/synth_piano/build.esp-box/synth_piano.bin \
-    0xD20000 apps/game_of_life/build.esp-box/game_of_life.bin
-```
-
-The single binary can be flashed by command:
-
-```shell
-esptool.py --chip esp32s3  --baud 921600 write_flash 0x0000 build.esp-box/combined.bin
-```
-
-## Build
-
-Initial build and flash of the application and partition table.
-
-```shell
-idf.py @boards/esp-box-3.cfg build flash monitor
-```
-
-After the initial flash, it's possible to use following command, just to update the factory application:
-
-```shell
-idf.py @boards/esp-box-3.cfg app-flash monitor
-```
-
-## Flashing apps
-
-Applications are stored in ota_0 - ota_4.
-
-Build application (e.g. hello_world):
-```shell
-idf.py build
-```
-
-Flash applications to ota_0 using [espflash](https://github.com/esp-rs/espflash/blob/main/espflash/README.md#installation):
-```
-espflash write-bin 0xD20000 .\build\app.bin
-```
-
-Alternatively using `esptool.py`:
-```
-esptool.py --chip esp32s3  --baud 921600 --before default_reset --after hard_reset write_flash 0xD20000 build/hello_world.bin
-```
-
-Change offset for other apps:
+Applications are stored in ota_0 - ota_4 with the following offset:
 - ota_0 - 0x220000
 - ota_1 - 0x4E0000
 - ota_2 - 0x7A0000
 - ota_3 - 0xA60000
 - ota_4 - 0xD20000
+
+Commands to build and flash appplications:
+```shell
+idf.py @boards/esp-box-3.cfg build
+pushd apps/tic_tac_toe
+idf.py @../../boards/esp-box-3.cfg build
+esptool.py --before default_reset --after hard_reset write_flash 0x220000 build.esp-box-3/tic_tac_toe.bin
+popd
+pushd apps/wifi_list
+idf.py @../../boards/esp-box-3.cfg build
+esptool.py --before default_reset --after hard_reset write_flash 0x4E0000 build.esp-box-3/wifi_list.bin
+popd
+pushd apps/calculator
+idf.py @../../boards/esp-box-3.cfg build
+esptool.py --before default_reset --after hard_reset write_flash 0x7A0000 build.esp-box-3/calculator.bin
+popd
+pushd apps/synth_piano
+idf.py @../../boards/esp-box-3.cfg build
+esptool.py --before default_reset --after hard_reset write_flash 0xA60000 build.esp-box-3/synth_piano.bin
+popd
+pushd apps/game_of_life
+idf.py @../../boards/esp-box-3.cfg build
+esptool.py --before default_reset --after hard_reset write_flash 0xD20000 build.esp-box-3/game_of_life.bin
+popd
+```
+
+Alternatively you can use [espflash](https://github.com/esp-rs/espflash/blob/main/espflash/README.md#installation):
+```
+espflash write-bin 0xD20000 .\build.esp-box-3\app.bin
+```
+
+### Merging all applications
+
+The following command merges all applications into binary image format:
+```shell
+esptool.py --chip esp32s3 merge_bin  -o build.esp-box-3/combined.bin --flash_mode dio --flash_size 16MB \
+    0x0 build.esp-box-3/bootloader/bootloader.bin \
+    0x8000 build.esp-box-3/partition_table/partition-table.bin \
+    0xf000 build.esp-box-3/ota_data_initial.bin \
+    0x20000 build.esp-box-3/esp32-graphical-bootloader.bin \
+    0x220000 apps/tic_tac_toe/build.esp-box-3/tic_tac_toe.bin \
+    0x4E0000 apps/wifi_list/build.esp-box-3/wifi_list.bin \
+    0x7A0000 apps/calculator/build.esp-box-3/calculator.bin \
+    0xA60000 apps/synth_piano/build.esp-box-3/synth_piano.bin \
+    0xD20000 apps/game_of_life/build.esp-box-3/game_of_life.bin
+```
+
+The single binary can be flashed by command:
+
+```shell
+esptool.py --chip esp32s3  --baud 921600 write_flash 0x0000 build.esp-box-3/combined.bin
+```
+
+## Create custom app
+
+You can use ESP-IDF app, just you need to make sure that application has fallback mechanism to factory app. This can be achieving by following code.
 
 ## Updating apps to fallback to bootloader
 
@@ -153,7 +127,7 @@ if (factory_partition != NULL) {
 }
 ```
 
-Here's more elaborate version which can be put somwhere into application, like reaction on back button:
+More elaborate version which can be put somwhere into application, like reaction on back button:
 
 ```c
 #include "esp_ota_ops.h"
