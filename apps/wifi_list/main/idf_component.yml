@@ -20,6 +20,13 @@ dependencies:
   esp_codec_dev:
     public: true
     version: "==1.1.0"
+  
+  # Wi-Fi support for ESP32-P4 based on https://github.com/espressif/esp-idf/tree/master/examples/protocols/mqtt/tcp
+  espressif/esp_wifi_remote:
+    version: ">=0.1.12"
+    rules:
+      - if: "target in [esp32p4, esp32h2]"
+
   ## Required IDF version
   idf:
-    version: ">=5.0.0"
+    version: ">=5.3.0"
