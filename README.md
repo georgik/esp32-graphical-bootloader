@@ -2,7 +2,7 @@
 
 3rd stage graphical bootloader which lets you pick applications stored in OTA partitions.
 
-** Update 2026-01-04 ** If you're searching for newer generation of the application which does not need modification of each binary, check out the project: https://github.com/georgik/esp32-p4-graphical-bootloader
+**Update 2026-01-04** If you're searching for newer generation of the application which does not need modification of each binary, check out the project: https://github.com/georgik/esp32-p4-graphical-bootloader
 
 
 ## How it works
