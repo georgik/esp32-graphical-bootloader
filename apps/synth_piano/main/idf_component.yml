@@ -1,21 +1,22 @@
 ## IDF Component Manager Manifest File
+# Requires IDF Component Manager 2.x
 dependencies:
   espressif/esp-box-3:
     version: "^1.2.0"
     rules:
-    - if: "target == ${USE_ESP_BOX_3}"
+    - if: "${BUILD_BOARD} == esp-box-3"
   espressif/esp-box:
     version: "3.1.0"
     rules:
-    - if: "target == ${USE_ESP_BOX}"
+    - if: "${BUILD_BOARD} == esp-box"
   espressif/m5stack_core_s3:
     version: "1.1.1"
     rules:
-    - if: "target == ${USE_M5STACK_CORE_S3}"
+    - if: "${BUILD_BOARD} == m5stack_core_s3"
   espressif/esp32_p4_function_ev_board:
     version: "2.0.0"
     rules:
-    - if: "target == ${USE_ESP32_P4_FUNCTION_EV_BOARD}"
+    - if: "${BUILD_BOARD} == esp32_p4_function_ev_board"
   # Workaround for i2c: CONFLICT! driver_ng is not allowed to be used with this old driver
   esp_codec_dev:
     public: true
