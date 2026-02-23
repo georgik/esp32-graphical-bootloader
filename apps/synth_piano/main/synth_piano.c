@@ -7,7 +7,6 @@
 #include "lvgl.h"
 #include "bsp/esp-bsp.h"
 #include "esp_timer.h"
-#include "driver/i2s.h"
 #include "esp_ota_ops.h"
 
 #define TAG "SynthPiano"
